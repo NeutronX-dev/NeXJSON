@@ -14,26 +14,38 @@ func Parse(str string) (interface{}, error) {
 	return payload, nil
 }
 
-func Stringify(JSON map[string]interface{}) (string, error) {
-	ret, err := json.Marshal(JSON)
+func Stringify(data_ interface{}) (string, error) {
+	ret, err := json.Marshal(data_)
 	if err != nil {
 		return "", err
 	}
 	return string(ret), nil
 }
 
-func Access(JSON interface{}, props string /* Value.MyOtherValue */) interface{} {
+func Access(data_ interface{}, props string /* Value.MyOtherValue */) interface{} {
 	var properties []string = strings.Split(props, ".")
 
-	var Last interface{} = JSON
+	var Last interface{} = data_
 	for _, property := range properties {
 		Last = (Last.(map[string]interface{}))[property]
 	}
 	return Last
 }
 
-func AllKeys(JSON interface{}) []string {
-	mapped := JSON.(map[string]interface{})
+func Replace(data_ interface{}, props string, NewValue interface{}) {
+	var properties []string = strings.Split(props, ".")
+	var Last interface{} = data_
+	for i, property := range properties {
+		if i == len(properties)-1 {
+			(Last.(map[string]interface{}))[property] = NewValue
+			break
+		}
+		Last = (Last.(map[string]interface{}))[property]
+	}
+}
+
+func AllKeys(data_ interface{}) []string {
+	mapped := data_.(map[string]interface{})
 	res := make([]string, 0)
 	for key := range mapped {
 		res = append(res, key)
